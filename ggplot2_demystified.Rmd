@@ -14,6 +14,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+For a pretty version click [here](https://rawgit.com/petrkeil/ggplot2_demystified/master/ggplot2_demystified.html).
+
 # Description
 
 This is a tutorial to basic `ggplot2` syntax and functionality. It will be used
