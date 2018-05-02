@@ -68,7 +68,7 @@ summary(beetles)
 
 # Basic syntax and elements
 
-Most important things: `geom`, `aes`, `scale`, `stat`, `facet`
+Most important things: `geom`, `aes`, `scale`, `stat`, `facet`.
 
 ## `qplot`
 
