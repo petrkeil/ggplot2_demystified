@@ -68,6 +68,8 @@ summary(beetles)
 
 # Basic syntax and elements
 
+Most important things: `geom`, `aes`, `scale`, `stat`, `facet`
+
 ## `qplot`
 
 `qplot` is simple to use, designed to produce easy plots, but doesn't have the full capability.
