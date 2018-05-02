@@ -2,29 +2,42 @@
 title: "ggplot2 demystified - iDiv tutorial"
 author: "Petr Keil"
 date: "May 2, 2018"
-output: html_document
+output: 
+  html_document: 
+    highlight: pygments
+    number_sections: yes
+    theme: cerulean
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+# Description
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+This is a tutorial to basic `ggplot2` syntax and functionality. It will be used
+during a 1h class for PhD students and postdocs at iDiv.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+The main goals are:
 
-```{r cars}
-summary(cars)
-```
+- To explain the basic (and unusual) `ggplot2` syntax, and to clarify terms such as 
+`geom`, `aes`, `theme`, `stats`, `scale`.
 
-## Including Plots
+- To give examples of the powerful `ggplot2` functionality, with special 
+emphasis on **multivariate data**.
 
-You can also embed plots, for example:
+- To show how `ggplot2` handles spatial data.
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+# Example data
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# Basic syntax
+
+# geom, aes, theme, stats, scale
+
+# Exploring multivariate data
+
+# Spatial data
+
+
+
