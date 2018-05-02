@@ -4,6 +4,8 @@ author: "Petr Keil"
 date: "May 2, 2018"
 output: 
   html_document: 
+    fig_height: 4
+    fig_width: 6
     highlight: pygments
     number_sections: yes
     theme: cerulean
@@ -16,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 For a pretty version click [here](https://rawgit.com/petrkeil/ggplot2_demystified/master/ggplot2_demystified.html).
 
-# Description
+# Introduction
 
 This is a tutorial to basic `ggplot2` syntax and functionality. It will be used
 during a 1h class for PhD students and postdocs at iDiv.
@@ -29,17 +31,226 @@ The main goals are:
 - To give examples of the powerful `ggplot2` functionality, with special 
 emphasis on **multivariate data**.
 
-- To show how `ggplot2` handles spatial data.
+## Why `ggplot2`? What is it?
 
-# Example data
+- An R package for data visualization based on [The Grammar of Graphics](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448/ref=as_li_ss_tl?ie=UTF8&qid=1477928463&sr=8-1&keywords=the+grammar+of+graphics&linkCode=sl1&tag=ggplot2-20&linkId=f0130e557161b83fbe97ba0e9175c431)
 
-# Basic syntax
+- Created by Hadley Wickham
 
-# geom, aes, theme, stats, scale
+- Inspired by good things from both `graphics` and `lattice`
 
-# Exploring multivariate data
+- Strong underlying model -- makes things concise, consistent, readable, and flexible
 
-# Spatial data
+- Great especially for mutlidimensional data (simulations, large observational data)
+
+- Excellent documentation, tutorials, widespread use
+
+- Beware: steep learning curve
+
+## Documentation
+
+The best one is [here](http://ggplot2.tidyverse.org/reference/).
+
+## Load the library
+
+```{r}
+library(ggplot2)
+```
+
+## Example data
+
+We will use global data on **tiger beetles** from Cassola and Pearson (2000) *Biological Conservation* 95: 197-208.
+
+```{r}
+beetles <- read.csv("http://www.petrkeil.com/wp-content/uploads/2017/09/tiger_beetles.csv") 
+summary(beetles)
+```
+
+# Basic syntax and elements
+
+## `qplot`
+
+`qplot` is simple to use, designed to produce easy plots, but doesn't have the full capability.
+
+```{r}
+qplot(x = Area, y = S, data=beetles)
+```
+
+## `ggplot`
+
+In the rest of the intro we will focus on `ggplot`. It's always the same syntax:
+
+1. Initialize `ggplot`, define data and the x and y
+
+2. Once ggplot is intialized, add stuff (geoms, stats, scales, themes):
+
+
+```{r}
+p <- ggplot(data = beetles, aes(x=Area, y=S)) 
+p
+```
+
+## `geom`
+
+Describes type of geometric objects to plot (points, lines, bars, ...)
+
+```{r}
+p <- ggplot(data = beetles, aes(x=Area, y=S)) +
+     geom_point()
+p
+```
+
+## `scale`
+
+Describes how the data are converted to display values (log scales, color scales, ...)
+
+```{r}
+p <- ggplot(data = beetles, aes(x=Area, y=S)) + 
+     geom_point() +
+     scale_x_log10() + scale_y_log10()
+p
+```
+
+## `aes`
+
+Describes properties of geoms that **vary** (position, colour, size, transparency)
+
+
+```{r}
+p <- ggplot(data = beetles, aes(x=Area, y=S)) + 
+     geom_point(aes(colour = Endemics)) + 
+     scale_x_log10() + scale_y_log10()
+p
+```
+
+```{r}
+p <- ggplot(data = beetles, aes(x=Area, y=S)) + 
+     geom_point(aes(size = Endemics, colour = Endemics)) + 
+     scale_x_log10() + scale_y_log10()
+p
+```
+
+```{r}
+p <- ggplot(data = beetles, aes(x=Area, y=S)) + 
+     geom_point(aes(colour = Realm)) + 
+     scale_x_log10() + scale_y_log10()
+p
+```
+
+## `stat`
+
+Does statistical transformations or models (means, medians, regression lines)
+
+```{r}
+p <- ggplot(data = beetles, aes(x=Area, y=S)) + 
+     geom_point(aes(colour = Realm)) + 
+     scale_x_log10() + scale_y_log10() +
+     stat_smooth(aes(colour = Realm), method="lm", se=FALSE) 
+p
+```
+
+## `facet`
+
+```{r, fig.width = 9, fig.height = 8}
+p <- ggplot(data = beetles, aes(x=Area, y=S)) + 
+     geom_point(aes(colour = Realm)) + 
+     stat_smooth(aes(colour = Realm), method="lm", se=FALSE) +
+     scale_x_log10() + scale_y_log10() + 
+     facet_wrap( ~ Realm)
+p
+```
+
+```{r, fig.width = 9, fig.height = 8}
+p <- ggplot(data = beetles, aes(x=Area, y=S)) + 
+     geom_point(aes(colour = Realm, size = Endemics)) + 
+     stat_smooth(aes(colour = Realm), method="lm", se=FALSE) +
+     scale_x_log10() + scale_y_log10() + 
+     facet_wrap( ~ Realm)
+p
+```
+
+```{r, fig.width = 9, fig.height = 8}
+p <- ggplot(data = beetles, aes(x=Area, y=S)) + 
+     # To repeat the same data in every panel, simply construct a data frame
+     # that does not contain the facetting variable.
+     geom_point(data = transform(beetles, Realm = NULL), colour = "grey85", aes(size= Endemics)) +
+     geom_point(aes(colour = Realm, size = Endemics)) + 
+     stat_smooth(aes(colour = Realm), method="lm", se=FALSE) +
+     scale_x_log10() + scale_y_log10() + 
+     facet_wrap( ~ Realm)
+p
+```
+
+## `theme`
+
+```{r, fig.width = 9, fig.height = 8}
+p <- ggplot(data = beetles, aes(x=Area, y=S)) + 
+     geom_point(data = transform(beetles, Realm = NULL), colour = "grey85", aes(size= Endemics)) +
+     geom_point(aes(colour = Realm, size = Endemics)) + 
+     stat_smooth(aes(colour = Realm), method="lm", se=FALSE) +
+     scale_x_log10() + scale_y_log10() + 
+     facet_wrap( ~ Realm) + 
+     theme_bw() # try theme_classic, theme_minimal, or package ggthemes
+p
+```
+
+# More tricks
+
+## Boxplots
+
+```{r}
+p.box <- ggplot(data = beetles, aes(x=Realm, y=S)) + 
+         geom_boxplot(aes(fill = Realm)) + 
+         scale_y_log10() 
+p.box
+```
+
+## Histograms
+
+```{r}
+p.hist <- ggplot(data = beetles, aes(x=S)) + 
+          geom_histogram() +
+          scale_x_log10()
+p.hist
+```
+
+## Multiple panels
+
+```{r, fig.width=10}
+library(gridExtra)
+grid.arrange(p.hist, p.box, ncol=2)
+```
+
+## Flipping coordinate systems
+
+```{r, fig.width=10}
+grid.arrange(p.hist , p.box + coord_flip(), ncol=2)
+```
+
+## Colour brewer
+
+```{r}
+p.box <- ggplot(data = beetles, aes(x=Realm, y=S)) + 
+         geom_boxplot(aes(fill = Realm)) + 
+         scale_y_log10() +
+         scale_fill_brewer(palette="Set2")
+p.box
+```
+
+## Annotation
+
+```{r}
+p.box <- ggplot(data = beetles, aes(x=Realm, y=S)) + 
+         geom_boxplot(aes(fill = Realm)) + 
+         scale_y_log10() +
+         scale_fill_brewer(palette="Set2") +
+         labs(title="A", 
+              subtitle = "Colourful boxplot",
+              y="Species richness", 
+              caption = "Copyright to Bored Badger.")
+p.box
+```
+
 
 
 
